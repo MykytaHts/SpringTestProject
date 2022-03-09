@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+    .back {
+        display: block;
+        color: black;
+        margin-bottom: 15px;
+    }
+    .back:hover{
+        color: #9d4edd;
+    }
+    body{
+        font-family: "Arial",serif;
+        background: #ddbdfc;
+    }
+    div {
+        -ms-overflow-style: none; 
+        overflow-y: scroll;
+    }
+
+    div::-webkit-scrollbar {
+        display: none; 
+    }
+    .btn{
+        height: 24px;
+        background: #9d4edd;
+        color: #fff;
+        transition-duration: .2s;
+        box-sizing: content-box;
+        border-radius: 2px;
+        border: #9d4edd 1px solid;
+    }
+    .btn:hover{
+        background: #fff;
+        color: #9d4edd;
+    }
+    .btn-left{
+        margin-left: -7px;
+        width: 53px;
+        border-radius: 0 5px 5px 0;
+    }
+    a {
+        text-decoration: none;
+        color: #9d4edd;
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+    }
+
+    input{
+        height: 24px;
+        margin-bottom: 9px;
+        border: 1px solid grey;
+    }
+    span {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+        display: inline-block;
+        margin: 5px 0 5px 0;
+    }
+    label {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+        display: inline-block;
+        margin-top: 5px;
+    }
+    .title {
+        display: inline-block;
+        font-size:20px;
+        font-family: "Roboto", sans-serif;
+        margin-bottom: 8px;
+    }
+    .block {
+        border-radius: 5px;
+        /*border: #9d4edd 1px solid;*/
+        padding: 20px 20px 5px 20px;
+        margin-bottom: 20px;
+        box-sizing: content-box;
+        background: white;
+    }
+    .book-input{
+        margin-top: 7px;
+        border-radius: 2px 0 0 2px;
+    }
+
+    .approve {
+        width: 93.5%;
+    }
+    .main-title{
+        border-radius: 5px;
+        background: #9d4edd;
+        color: white;
+        padding: 5px 20px 5px 20px;
+        box-sizing: content-box;
+        font-family: "Roboto", sans-serif;
+        font-size: 25px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .block-span-purple{
+        background: #9d4edd;
+        padding: 3px 10px 3px 10px;
+        color: white;
+        display: inline-block;
+        border-radius: 7px;
+
+    }
+    .block-span-white{
+        margin-bottom: 3px;
+        margin-top: 3px;
+        display: inline-block;
+        background: #fff;
+        padding: 3px;
+        color: black;
+        border-radius: 7px;
+    }
+</style>
+
+<body style="display: flex; padding-top: 20px; justify-content: center">
+
+<div style="width: 88vw; display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between">
+    <div >
+        <p class="main-title">All available books</p>
+        <div style="height: 67vh">
+            <div class="block" th:each="entry : ${titleMap}">
+                <span>Book: </span>
+                <a th:href="@{/books/manager/{id}/{title}/(title=${entry.getKey()}, id=${managerId})}"
+                   th:text="${entry.getKey()}"></a><br>
+                <span >Books available: </span>
+                <span th:text="${entry.getValue()}"></span><br>
+                <form th:action="@{/books/{title}/(title=${entry.getKey()})}" th:method="PUT">
+                    <input type="hidden" name="mid" th:value="${managerId}">
+                    <label for="title">Set new title:</label><br>
+                    <input class="book-input" id="title" name="fin" type="text" placeholder="Title">
+                    <input class="btn btn-left" type="submit" value="Update">
+                </form>
+                <form th:action="@{/books/{title}(title=${entry.getKey()})}" th:method="DELETE">
+                    <input type="hidden" name="mid" th:value="${managerId}">
+                    <label for="amount">Amount of books to delete:</label><br>
+                    <input class="book-input" id="amount" name="amount" type="number" placeholder="Amount">
+                    <input class="btn btn-left" type="submit" value="Delete">
+                </form>
+                <br>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div >
+            <p class="main-title" >Readers</p>
+            <div  style="height: 40vh">
+                <div class="block" th:each="entry : ${readerMap}">
+                    <span class="title" th:text="${entry.getKey().getFirstName() + ' ' + entry.getKey().getLastName()}"></span>
+                    <br>
+                    <span>Days with us: </span>
+                    <span th:text="${entry.getValue()}"></span><br>
+                    <a th:href="@{/users/{id}/manager/{mid}(mid=${managerId}, id=${entry.getKey().getId()})}">
+                        More info...
+                    </a> <br><br>
+                </div>
+            </div>
+        </div>
+        <div >
+            <p class="main-title" >Debtors</p>
+            <div style="height: 30vh">
+                <div class="block" th:each="entry : ${debtorMap}">
+                    <span class="title" th:text="${entry.getKey().getFirstName() + ' ' + entry.getKey().getLastName()}"></span>
+                    <br>
+                    <span>Days with us: </span>
+                    <span th:text="${entry.getValue()}"></span><br>
+                    <a th:href="@{/users/{id}/manager/{mid}(mid=${managerId}, id=${entry.getKey().getId()})}">
+                        More info...
+                    </a><br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div style="width: 230px">
+        <p class="main-title">Orders</p>
+        <div  style="height: 73vh">
+            <div class="block" th:each="order : ${orders}">
+                <span>Order date: </span>
+                <span style="color: grey" th:text="${order.getOrderDate()}"></span><br>
+                <span>Required date: </span>
+                <span style="color: grey" th:text="${order.getRequiredDate()}"></span><br>
+                <span>Book title: </span>
+                <a th:href="@{/books/manager/{mid}/{title}(mid=${managerId}, title=${order.getBook().getTitle()})}"
+                   th:text="${order.getBook().getTitle()}"></a><br><br>
+                <form th:action="@{/orders/approve/{id}(id=${order.getId()})}" method="POST">
+                    <input class="btn approve" type="submit" value="Approve">
+                </form>
+            </div>
+        </div>
+    </div>
+    <div style="width: 287px">
+        <p class="main-title">Readers statistics</p>
+        <div>
+            <span class="block-span-purple">Average age: </span>
+            <span class="block-span-white" th:text="${averageAge}"></span><br>
+            <span class="block-span-purple">Days from registration: </span>
+            <span class="block-span-white" th:text="${averageDays}"></span><br>
+        </div>
+        <br>
+        <div class="block">
+            <span>Average requests: </span>
+            <span class="block-span-white" th:if="${averageOrders != null}" th:text="${averageOrders}"></span>
+            <br>
+            <span style="color:grey; font-size: 12px; margin: 6px 0 9px 0;" th:if="${averageOrders != null}"
+                    th:text="${'(from ' + startDateOrder + ' to ' + endDateOrder + ')'}">
+            </span>
+            <br>
+            <form th:action="@{/managers/order/{id}(id=${managerId})}" method="POST">
+                <label for="fromOrder">From:</label><br>
+                <input style="width: 100%; margin: 6px 0 6px 0; border-radius: 2px" type="date" id="fromOrder" name="startDate"><br>
+                <label  for="toOrder">To:</label><br>
+                <input style="width: 100%; margin: 6px 0 6px 0; border-radius: 2px" type="date" id="toOrder" name="endDate"><br><br>
+                <input class="btn" style="width: 95%" type="submit" value="Get info">
+            </form>
+        </div>
+        <div class="block">
+            <span>Ordered books in selected period: </span>
+            <span class="block-span-white" th:if="${booksOrdered != null}" th:text="${booksOrdered}"></span>
+            <br>
+            <span style="color:grey; font-size: 12px; margin: 6px 0 9px 0;" th:if="${booksOrdered != null}"
+                    th:text="${'(from ' + startDateBook + ' to ' + endDateBook + ')'}">
+            </span>
+            <br>
+            <form th:action="@{/managers/book/{id}(id=${managerId})}" method="POST">
+                <label for="fromBook">From:</label><br>
+                <input style="width: 100%; margin: 6px 0 6px 0; border-radius: 2px" type="date" id="fromBook" name="startDate"><br>
+                <label for="toBook">To:</label><br>
+                <input style="width: 100%; margin: 6px 0 6px 0; border-radius: 2px" type="date" id="toBook" name="endDate"><br><br>
+                <input class="btn" style="width: 95%" type="submit" value="Get info">
+            </form>
+        </div>
+    </div>
+    <div>
+        <p class="main-title">Menu</p>
+        <div class="block">
+            <a th:href="@{/books/manager/{id}/new(id=${managerId})}">Create Book</a><br>
+            <a th:href="@{/authors/manager/{id}/new(id=${managerId})}">Create Author</a>
+            <br>
+            <br>
+            <a class="back" href="/main">Back</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body style="display: flex; justify-content: center">
+
+<div style="width: 75vw; display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between">
+    <div>
+        <h2>All available books</h2>
+        <div th:each="entry : ${titleMap}">
+            <span>Book: </span>
+            <a th:href="@{/books/{title}/(title=${entry.getKey()})}" th:text="${entry.getKey()}"></a><br>
+            <span>Books available: </span>
+            <span th:text="${entry.getValue()}"></span><br>
+            <form th:action="@{/books/{title}/(title=${entry.getKey()})}" th:method="PUT">
+                <input type="hidden" name="mid" th:value="${managerId}">
+                <label for="title">Set new title:</label><br>
+                <input id="title" name="fin" type="text" placeholder="Title">
+                <input type="submit" value="Update">
+            </form>
+            <form th:action="@{/books/{title}(title=${entry.getKey()})}" th:method="DELETE">
+                <input type="hidden" name="mid" th:value="${managerId}">
+                <label for="amount">Amount of books to delete:</label><br>
+                <input id="amount" name="amount" type="number" placeholder="Amount">
+                <input type="submit" value="Delete">
+            </form>
+            <br>
+        </div>
+    </div>
+    <div>
+        <h2>Readers</h2>
+        <div th:each="entry : ${readerMap}">
+            <h4 th:text="${entry.getKey().getFirstName() + ' ' + entry.getKey().getLastName()}"></h4>
+            <span>Days with us: </span>
+            <span th:text="${entry.getValue()}"></span><br>
+            <a th:href="@{/users/{id}/manager/{mid}(mid=${managerId}, id=${entry.getKey().getId()})}">
+                More info...
+            </a>
+            <br>
+            <br>
+        </div>
+    </div>
+    <div>
+        <h2>Debtors</h2>
+        <div th:each="debtor : ${debtors}">
+            <strong th:text="${debtor.getFirstName() + ' ' + debtor.getLastName()}"></strong> <br><br>
+            <a th:href="@{/users/{id}/manager/{mid}(mid=${managerId}, id=${debtor.getId()})}">
+                More info...
+            </a>
+            <br>
+        </div>
+    </div>
+    <div>
+        <h2>Orders</h2>
+        <div th:each="order : ${orders}">
+            <span>Order date: </span>
+            <span th:text="${order.getOrderDate()}"></span><br>
+            <span>Required date: </span>
+            <span th:text="${order.getRequiredDate()}"></span><br>
+            <span>Book title: </span>
+            <span th:text="${order.getBook().getTitle()}"></span><br>
+            <form th:action="@{/orders/approve/{id}(id=${order.getId()})}" method="POST">
+                <input type="submit" value="Approve">
+            </form>
+            <br>
+        </div>
+    </div>
+    <div>
+        <h2>Readers statistics</h2>
+        <div>
+            <span th:text="${'Average age: ' + averageAge}"></span><br>
+            <span th:text="${'Days from registration: ' + averageDays}"></span><br>
+        </div>
+        <hr>
+        <div>
+            <strong>Average requests: </strong>
+            <span th:if="${averageOrders != null}" th:text="${averageOrders}"></span>
+            <br>
+            <span style="color:#576574" th:if="${averageOrders != null}"
+                    th:text="${'(from ' + startDateOrder + ' to ' + endDateOrder + ')'}">
+            </span>
+            <br>
+            <br>
+            <form th:action="@{/managers/order/{id}(id=${managerId})}" method="POST">
+                <label for="fromOrder">From:</label><br>
+                <input type="date" id="fromOrder" name="startDate"><br>
+                <label for="toOrder">To:</label><br>
+                <input type="date" id="toOrder" name="endDate"><br><br>
+                <input type="submit" value="Get info">
+            </form>
+        </div>
+        <hr>
+        <br>
+        <div>
+            <strong>Ordered books in selected period: </strong>
+            <span th:if="${booksOrdered != null}" th:text="${booksOrdered}"></span>
+            <br>
+            <span style="color:#576574" th:if="${booksOrdered != null}"
+                    th:text="${'(from ' + startDateBook + ' to ' + endDateBook + ')'}">
+            </span>
+            <br>
+            <br>
+            <form th:action="@{/managers/book/{id}(id=${managerId})}" method="POST">
+                <label for="fromBook">From:</label><br>
+                <input type="date" id="fromBook" name="startDate"><br>
+                <label for="toBook">To:</label><br>
+                <input type="date" id="toBook" name="endDate"><br><br>
+                <input type="submit" value="Get info">
+            </form>
+        </div>
+    </div>
+    <div>
+        <h2>Menu</h2>
+        <a th:href="@{/books/manager/{id}/new(id=${managerId})}">Create Book</a><br>
+        <a th:href="@{/authors/manager/{id}/new(id=${managerId})}">Create Author</a>
+        <br>
+        <br>
+        <a href="/main">Back</a>
+    </div>
+</div>
+
+</body>
+</html>

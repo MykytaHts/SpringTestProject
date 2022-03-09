@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Author</title>
+</head>
+<body>
+    <h2>Create Author</h2>
+    <form action="/authors" method="POST">
+        <input type="hidden" name="mid" th:value="${managerId}">
+        <label for="firstName">First Name</label>
+        <input type="text" id="firstName" name="firstName"><br>
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName"><br><br>
+        <input type="submit" value="save">
+    </form>
+    <br>
+    <a th:href="@{/managers/{id}(id=${managerId})}">Back</a>
+</body>
+</html>

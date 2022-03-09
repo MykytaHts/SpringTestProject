@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User</title>
+</head>
+<body>
+<div>
+    <h2 th:text="${user.getFirstName() + ' ' + user.getLastName()}"></h2>
+    <p th:text="${'Email: ' + user.getEmail()}"></p>
+    <p th:text="${'Birthday: ' + user.getBirthday()}"></p>
+    <p th:text="${'Registration date: ' + user.getRegistrationDate()}"></p>
+    <h4>Books</h4>
+    <ul>
+        <li th:each="book : ${books}" th:text="${book.getTitle()}">
+        </li>
+    </ul>
+    <a th:href="@{/managers/{id}(id=${managerId})}">Back</a>
+</div>
+</body>
+</html>

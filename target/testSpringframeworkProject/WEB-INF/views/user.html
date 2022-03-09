@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+</head>
+<body>
+
+<div style="width: 62vw; display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between">
+    <div>
+        <h2>Available books</h2>
+        <div th:each="title : ${titles}">
+            <span>Book: </span>
+            <span th:text="${title}"></span>
+            <form th:action="@{/orders/user/{id}(id=${userId})}" method="POST">
+                <input type="hidden" th:value="${title}" name="title">
+                <input type="submit" value="Request">
+            </form>
+            <br>
+        </div>
+    </div>
+    <div>
+        <h2>Own books</h2>
+        <div th:each="book : ${ownBooks}">
+            <span>Book: </span>
+            <span th:text="${book.getTitle()}"></span><br>
+            <form th:action="@{/orders/book/{id}(id=${book.getId()})}" th:method="DELETE" style="display: inline">
+                <input type="hidden" th:value="${userId}" name="userId">
+                <input type="submit" value="Return">
+            </form>
+            <br>
+        </div>
+    </div>
+    <div style="height: 70vh; overflow: auto; padding-right: 20px">
+        <h2>Order history</h2>
+        <div th:each="order : ${orders}">
+            <span>Order date: </span>
+            <span th:text="${order.getOrderDate()}"></span><br>
+            <span>Required date: </span>
+            <span th:text="${order.getRequiredDate()}"></span><br>
+            <span>Book title: </span>
+            <span th:text="${order.getBook().getTitle()}"></span><br>
+            <span>Active: </span>
+            <span th:text="${order.isActive()}"></span><br>
+            <span th:if="${order.getReturnDate() != null}">Return date: </span>
+            <span th:text="${order.getReturnDate()}"
+                  th:if="${order.getReturnDate() != null}"></span>
+            <hr>
+        </div>
+    </div>
+    <div>
+        <h2>Books statistics</h2>
+        <h3 th:if="${popularBook != null}" th:text="${'From ' + startDate + ' to ' + endDate}"></h3>
+        <strong>The most popular book: </strong>
+        <br>
+        <span th:if="${popularBook != null}" th:text="${popularBook}"></span>
+        <br>
+        <strong>The most unpopular book: </strong>
+        <br>
+        <span th:if="${unpopularBook != null}" th:text="${unpopularBook}"></span>
+        <br>
+        <br>
+        <form th:action="@{/users/book/{id}(id=${userId})}" method="POST">
+            <label for="from">From:</label><br>
+            <input type="date" id="from" name="startDate"><br>
+            <label for="to">To:</label><br>
+            <input type="date" id="to" name="endDate"><br><br>
+            <input type="submit" value="Get info">
+        </form>
+    </div>
+    <div>
+        <h2>Menu</h2>
+        <a href="/main">Back to main</a>
+    </div>
+</div>
+</body>
+</html>

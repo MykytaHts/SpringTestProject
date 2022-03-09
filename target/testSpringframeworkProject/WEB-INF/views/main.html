@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<body style="position: relative">
+<div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+    <form style="width: 140px" action="/main/user" method="POST">
+        <h3>Choose user: </h3>
+        <select style="width: 100%" name="id" id="user">
+            <option th:each="user : ${users}" th:value="${user.getId()}"
+                    th:text="${user.getFirstName() + ' ' + user.getLastName()}">
+            </option>
+        </select>
+        <br>
+        <br>
+        <input style="width: 100%" type="submit" value="Confirm">
+    </form>
+
+    <form style="margin-left: 30px" action="/main/manager" method="POST">
+        <h3>Choose manager: </h3>
+        <select style="width: 100%" name="id" id="manager">
+            <option th:each="manager : ${managers}" th:value="${manager.getId()}"
+                    th:text="${manager.getFirstName() + ' ' + manager.getLastName()}">
+            </option>
+        </select>
+        <br>
+        <br>
+        <input style="width: 100%" type="submit" value="Confirm">
+    </form>
+</div>
+
+<a style="position: absolute; top: 62%; left: 47.5%;" href="/users/new">Create User</a>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book</title>
+</head>
+<body>
+<div>
+    <h3 th:text="${book.getTitle()}"></h3>
+    <p th:text="${'Main author: ' + book.getMainAuthor().getFirstName() + ' ' + book.getMainAuthor().getLastName()}"></p>
+    <span >Average reading time: </span>
+    <strong th:if="${averageTimeReading != null}" th:text="${averageTimeReading}"></strong>
+    <strong th:unless="${averageTimeReading != null}">there is not info yet</strong> <br>
+    <span th:if="${coauthors.size() > 0}">Co-authors: </span><br>
+    <ul>
+        <li th:each="coauthor : ${coauthors}"
+            th:text="${coauthor.getFirstName() + ' ' + coauthor.getLastName()}">
+        </li>
+    </ul>
+    <br>
+    <br>
+    <a th:href="@{/managers/{id}(id=${managerId})}">Back</a>
+</div>
+</body>
+</html>

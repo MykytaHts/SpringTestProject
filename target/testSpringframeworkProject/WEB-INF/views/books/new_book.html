@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>New Book</title>
+</head>
+<body>
+
+    <h2>Create Book</h2>
+    <form action="/books" method="POST">
+        <input type="hidden" name="mid" th:value="${managerId}">
+        <label for="title">Title</label>
+        <input type="text" id="title" name="title"><br>
+        <label for="id">Author</label>
+        <select name="id" id="id" >
+            <option th:each="author : ${authors}" th:value="${author.getId()}"
+                      th:text="${author.getFirstName()}">
+            </option>
+        </select>
+        <br>
+        <label for="ids">Co-authors</label>
+        <select name="ids" id="ids" multiple>
+            <option th:each="author : ${authors}" th:value="${author.getId()}"
+                    th:text="${author.getFirstName()}">
+            </option>
+        </select>
+        <br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" th:default="1"><br><br>
+        <input type="submit" value="save">
+    </form>
+    <br>
+    <a th:href="@{/managers/{id}(id=${managerId})}">Back</a>
+
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Main Page</title>
+</head>
+
+<style>
+    div {
+        -ms-overflow-style: none;
+        overflow-y: scroll;
+    }
+    div::-webkit-scrollbar {
+        display: none;
+    }
+    .back{
+        display: inline-block;
+        color: black;
+        text-decoration: none;
+        margin-bottom: 15px;
+        text-align: center;
+    }
+    .back:hover{
+        color: #9d4edd;
+    }
+    a {
+        text-decoration: none;
+        color: #9d4edd;
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+    }
+    body{
+        font-family: "Arial",serif;
+        background: #ddbdfc;
+        padding-top: 20px;
+        overflow: hidden;
+    }
+    .btn{
+        height: 24px;
+        background: #9d4edd;
+        color: #fff;
+        transition-duration: .2s;
+        box-sizing: content-box;
+        border-radius: 2px;
+        width: 92%;
+    }
+    .btn:hover{
+        background: #fff;
+        color: #9d4edd;
+    }
+    input{
+        height: 24px;
+        border: grey 1px solid;
+        margin-bottom: 9px;
+    }
+    span {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+    }
+    label {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+    }
+    .block {
+        border-radius: 5px;
+        padding: 20px 20px 5px 20px;
+        margin-bottom: 20px;
+        box-sizing: content-box;
+        background: white;
+    }
+    .main-title{
+        border-radius: 5px;
+        background: #9d4edd;
+        color: white;
+        padding: 5px 20px 5px 20px;
+        box-sizing: content-box;
+        font-family: "Roboto", sans-serif;
+        font-size: 25px;
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+    .block-span-purple{
+        background: #9d4edd;
+        padding: 3px 10px 3px 10px;
+        color: white;
+        display: inline-block;
+        border-radius: 7px;
+        margin-bottom: 3px;
+        margin-top: 3px;
+    }
+    .block-span-white{
+        margin-bottom: 3px;
+        margin-top: 3px;
+        display: inline-block;
+        background: #fff;
+        padding: 3px;
+        color: black;
+        border-radius: 7px;
+    }
+</style>
+<body style="display: flex; justify-content: center">
+
+<div style="width: 85vw; display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: space-between">
+
+    <div>
+        <div>
+            <p class="main-title">Available books</p>
+            <div style="height: 37vh">
+                <div class="block" th:each="title : ${titles}">
+                    <span>Title: </span>
+                    <span th:text="${title}"></span>
+                    <form th:action="@{/orders/user/{id}(id=${userId})}" method="POST">
+                        <input type="hidden" th:value="${title}" name="title">
+                        <br>
+                        <input class="btn" type="submit" value="Request">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div>
+            <p class="main-title">Own books</p>
+            <div style="height: 37vh">
+                <div class="block" th:each="book : ${ownBooks}">
+                    <span>Title: </span>
+                    <span th:text="${book.getTitle()}"></span><br>
+                    <span>Main Author: </span>
+                    <span th:text="${book.getMainAuthor().getFirstName()}"></span><br><br>
+                    <form th:action="@{/orders/book/{id}(id=${book.getId()})}" th:method="DELETE" style="display: inline">
+                        <input type="hidden" th:value="${userId}" name="userId">
+                        <input class="btn" type="submit" value="Return">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div>
+        <p class="main-title">Order history</p>
+        <div style="height: 63vh;">
+            <div class="block" style="padding-bottom: 20px" th:each="order : ${orders}">
+                <span>Order date: </span>
+                <span style="color: grey" th:text="${order.getOrderDate()}"></span><br>
+                <span>Required date: </span>
+                <span style="color: grey" th:text="${order.getRequiredDate()}"></span><br>
+                <span>Book title: </span>
+                <span style="color: grey" th:text="${order.getBook().getTitle()}"></span><br>
+                <span>Active: </span>
+                <span style="color: grey" th:text="${order.isActive()}"></span><br>
+                <span th:if="${order.getReturnDate() != null}">Return date: </span>
+                <span style="color: grey" th:text="${order.getReturnDate()}"
+                      th:if="${order.getReturnDate() != null}"></span>
+            </div>
+        </div>
+    </div>
+    <div style="width: 280px">
+        <p class="main-title">Books statistics</p>
+        <div class="block">
+            <span>The most popular book: </span>
+            <span class="block-span-white" th:if="${popularBook != null}" th:text="${popularBook}"></span>
+            <br>
+            <span>The most unpopular book: </span>
+            <span class="block-span-white" th:if="${unpopularBook != null}" th:text="${unpopularBook}"></span>
+            <br><br>
+            <span style="color: grey; display: inline-block; font-size: 12px; margin: 10px 0 10px 0"
+                  th:if="${popularBook != null}"
+                  th:text="${'(from ' + startDate + ' to ' + endDate + ')'}">
+            </span>
+            <br>
+            <form th:action="@{/users/book/{id}(id=${userId})}" method="POST">
+                <label for="from">From:</label><br>
+                <input style="width: 100%; margin: 6px 0 10px 0"  type="date" id="from" name="startDate"><br>
+                <label for="to">To:</label><br>
+                <input style="width: 100%; margin-top: 6px" type="date" id="to" name="endDate"><br><br>
+                <input class="btn" type="submit" value="Get info">
+            </form>
+        </div>
+    </div>
+    <div>
+        <p class="main-title">User statistics</p>
+        <div>
+            <span class="block-span-purple">Days spent reading: </span>
+            <span class="block-span-white" th:if="${spentTime != null}"
+                  th:text="${spentTime}"></span>
+            <span th:unless="${spentTime != null}" >There is no info yet</span>
+            <br>
+            <span class="block-span-purple">Books read:</span>
+            <span class="block-span-white" th:if="${booksRead != null}" th:text="${booksRead}"></span>
+            <span th:unless="${booksRead != null}" >There is no info yet</span>
+        </div>
+    </div>
+
+    <div>
+        <p class="main-title">Menu</p>
+        <div style="text-align: center" class="block">
+            <a class="back" href="/main">Back</a>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
